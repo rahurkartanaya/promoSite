@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Replace Profile Images</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+    .image-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 30px;
+      justify-content: center;
+    }
+    .image-item {
+      text-align: center;
+      background-color: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      width: 200px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .profile-img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #ccc;
+      display: block;
+      margin: 0 auto 10px;
+    }
+    .instructions {
+      background-color: #f0f0f0;
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .file-input {
+      display: none;
+    }
+    .upload-btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    .upload-btn:hover {
+      background-color: #45a049;
+    }
+    .success-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      display: none;
+    }
+    .progress-container {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .progress-bar {
+      width: 100%;
+      background-color: #e0e0e0;
+      border-radius: 4px;
+      height: 20px;
+      margin-bottom: 10px;
+    }
+    .progress {
+      height: 100%;
+      background-color: #4CAF50;
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.3s;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .complete-message {
+      text-align: center;
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #dff0d8;
+      border-radius: 5px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Replace Profile Images</h1>
+  
+  <div class="instructions">
+    <h2>Instructions:</h2>
+    <ol>
+      <li>For each profile below, click the "Choose Image" button to select a new profile image</li>
+      <li>The image will automatically be saved with the correct filename</li>
+      <li>A green checkmark will appear when the image has been successfully replaced</li>
+      <li>The progress bar will update as you replace each image</li>
+      <li>When all 10 images have been replaced, you'll see a completion message</li>
+    </ol>
+  </div>
+  
+  <div class="progress-container">
+    <div class="progress-bar">
+      <div class="progress" id="progress-bar"></div>
+    </div>
+    <p id="progress-text">0/10 images replaced</p>
+  </div>
+  
+  <div class="image-container" id="image-container">
+    <!-- Profile images will be added here by JavaScript -->
+  </div>
+  
+  <div class="complete-message" id="complete-message">
+    <h2>All profile images have been replaced successfully!</h2>
+    <p>You can now close this page and view the updated social media page.</p>
+    <a href="social-media.html" target="_blank">
+      <button class="upload-btn">View Social Media Page</button>
+    </a>
+  </div>
+
+  <script>
+    // Define the profile images mapping
+    const profileImages = [
+      { name: 'liam-profile.jpg', username: 'the_real_liam', current: 'images/social-media/liam-profile.jpg' },
+      { name: 'emma-profile.jpg', username: 'cinema.with.emma', current: 'images/social-media/emma-profile.jpg' },
+      { name: 'jessica-profile.jpg', username: 'jessica_travels', current: 'images/social-media/jessica-profile.jpg' },
+      { name: 'jay-profile.jpg', username: 'moviebuff_jay', current: 'images/social-media/jay-profile.jpg' },
+      { name: 'sarah-profile.jpg', username: 'sarah_loves_movies', current: 'images/social-media/sarah-profile.jpg' },
+      { name: 'jenna-profile.jpg', username: 'Jenna Ortega', current: 'images/social-media/jenna-profile.jpg' },
+      { name: 'ryan-profile.jpg', username: 'Ryan Reynolds', current: 'images/social-media/ryan-profile.jpg' },
+      { name: 'millie-profile.jpg', username: 'Millie Bobby Brown', current: 'images/social-media/millie-profile.jpg' },
+      { name: 'chris-evans-profile.jpg', username: 'Chris Evans', current: 'images/social-media/chris-evans-profile.jpg' },
+      { name: 'zendaya-profile.jpg', username: 'Zendaya', current: 'images/social-media/zendaya-profile.jpg' }
+    ];
+
+    // Counter for completed uploads
+    let completedUploads = 0;
+
+    // Function to update progress
+    function updateProgress() {
+      const progressBar = document.getElementById('progress-bar');
+      const progressText = document.getElementById('progress-text');
+      const percentage = (completedUploads / profileImages.length) * 100;
+      
+      progressBar.style.width = percentage + '%';
+      progressText.textContent = `${completedUploads}/${profileImages.length} images replaced`;
+      
+      if (completedUploads === profileImages.length) {
+        document.getElementById('complete-message').style.display = 'block';
+      }
+    }
+
+    // Function to handle file selection
+    function handleFileSelect(event, profile) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      
+      reader.onload = function(e) {
+        // Update the image preview
+        const imgElement = document.getElementById(`img-${profile.name}`);
+        imgElement.src = e.target.result;
+        
+        // Upload the file to the server
+        uploadFile(file, profile.name);
+      };
+      
+      reader.readAsDataURL(file);
+    }
+    
+    // Function to upload file to server
+    function uploadFile(file, filename) {
+      const formData = new FormData();
+      formData.append('image', file);
+      formData.append('filename', filename);
+      
+      fetch('/upload', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Show success badge
+          const badge = document.getElementById(`badge-${filename}`);
+          badge.style.display = 'flex';
+          
+          // Update progress
+          completedUploads++;
+          updateProgress();
+          
+          console.log(`Image ${filename} uploaded successfully`);
+        } else {
+          console.error(`Error uploading ${filename}: ${data.message}`);
+          alert(`Error uploading ${filename}: ${data.message}`);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert(`Error uploading ${filename}: ${error.message}`);
+      });
+    }
+
+    // Create profile image elements
+    window.onload = function() {
+      const container = document.getElementById('image-container');
+      
+      profileImages.forEach(profile => {
+        const div = document.createElement('div');
+        div.className = 'image-item';
+        
+        const img = document.createElement('img');
+        img.className = 'profile-img';
+        img.id = `img-${profile.name}`;
+        img.src = profile.current; // Show current image
+        img.alt = profile.username;
+        
+        const usernameP = document.createElement('p');
+        usernameP.innerHTML = `<strong>${profile.username}</strong>`;
+        
+        const filenameP = document.createElement('p');
+        filenameP.textContent = `Filename: ${profile.name}`;
+        
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.className = 'file-input';
+        fileInput.id = `input-${profile.name}`;
+        fileInput.accept = 'image/*';
+        fileInput.addEventListener('change', (e) => handleFileSelect(e, profile));
+        
+        const uploadBtn = document.createElement('button');
+        uploadBtn.className = 'upload-btn';
+        uploadBtn.textContent = 'Choose Image';
+        uploadBtn.onclick = () => document.getElementById(`input-${profile.name}`).click();
+        
+        const successBadge = document.createElement('div');
+        successBadge.className = 'success-badge';
+        successBadge.id = `badge-${profile.name}`;
+        successBadge.textContent = '✓';
+        
+        div.appendChild(img);
+        div.appendChild(usernameP);
+        div.appendChild(filenameP);
+        div.appendChild(fileInput);
+        div.appendChild(uploadBtn);
+        div.appendChild(successBadge);
+        
+        container.appendChild(div);
+      });
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>US - Official Movie Site</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Roboto:wght@300;400;700&family=Special+Elite&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="noise-overlay"></div>
+    
+    <!-- Hero Section -->
+    <section id="hero">
+        <div class="audio-container">
+            <audio id="hero-audio" autoplay loop preload="auto">
+                <source src="Audios/audio 1.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+        <div class="container">
+            <h1 class="glitch-text" data-text="US">US</h1>
+            <p class="tagline">We are our own worst enemy</p>
+            <div class="scroll-indicator">
+                <span>Scroll Down</span>
+                <div class="arrow"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Synopsis Section -->
+    <section id="synopsis">
+        <div class="audio-container">
+            <audio id="synopsis-audio" autoplay loop preload="auto">
+                <source src="Audios/audio 2.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+        <div class="container">
+            <h2>THE STORY</h2>
+            <div class="synopsis-content">
+                <div class="synopsis-text">
+                    <p>Olivia and her family move into a secluded beach house, only to experience eerie whispers and terrifying visions of each other.</p>
+                    <p>Each night, paranoia takes over as they attack one another, convinced their own family members are turning against them.</p>
+                    <p>The horror peaks when they discover masked figures—ghostly doppelgängers of themselves—were the house's previous victims, cursed to repeat the cycle.</p>
+                    <p>As they fight to escape, the house ensures its deadly game continues, waiting for its next unsuspecting family.</p>
+                </div>
+                <div class="mirror-effect"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Visual Gallery -->
+    <section id="gallery">
+        <div class="audio-container">
+            <audio id="gallery-audio" autoplay loop preload="auto">
+                <source src="Audios/audio 3.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+        <div class="container">
+            <h2>IMAGES</h2>
+            <div class="gallery-container">
+                <div class="gallery-item">
+                    <div class="poster-container">
+                        <img src="AI assignment movie poster US-07.png" alt="Movie Poster 1" class="poster-image">
+                        <div class="poster-overlay">
+                            <div class="overlay-content">
+                                <span>Who are you?</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="poster-container">
+                        <img src="AI assignment movie poster US-08.png" alt="Movie Poster 2" class="poster-image">
+                        <div class="poster-overlay">
+                            <div class="overlay-content">
+                                <span>What do you want?</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <div class="poster-container">
+                        <img src="AI assignment movie poster US-09.png" alt="Movie Poster 3" class="poster-image">
+                        <div class="poster-overlay">
+                            <div class="overlay-content">
+                                <span>We are US</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Coming Soon Section -->
+    <section id="coming-soon">
+        <div class="container">
+            <h2>COMING SOON</h2>
+            <div class="release-info">
+                <div class="countdown">
+                    <div class="countdown-item">
+                        <span class="count">31</span>
+                        <span class="label">DAYS</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="count">12</span>
+                        <span class="label">HOURS</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="count">45</span>
+                        <span class="label">MINUTES</span>
+                    </div>
+                    <div class="countdown-item">
+                        <span class="count">22</span>
+                        <span class="label">SECONDS</span>
+                    </div>
+                </div>
+                <div class="social-links">
+                    <a href="#" class="social-link">FACEBOOK</a>
+                    <a href="#" class="social-link">TWITTER</a>
+                    <a href="#" class="social-link">INSTAGRAM</a>
+                    <a href="social-media.html" class="social-link highlight">SOCIAL MEDIA POSTS</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Global Audio Control -->
+    <div class="global-audio-control">
+        <button id="audio-toggle" class="audio-toggle">
+            <span class="audio-icon">🔊</span>
+        </button>
+    </div>
+
+    <!-- Audio Autoplay Helper Script -->
+    <script>
+        // This script helps overcome browser autoplay restrictions
+        // by playing audio on the first user interaction with the page
+        function enableAudio() {
+            const audioElements = document.querySelectorAll('audio');
+            audioElements.forEach(audio => {
+                audio.play().catch(e => console.log("Initial play failed:", e));
+            });
+            
+            // Remove event listeners after first interaction
+            document.removeEventListener('click', enableAudio);
+            document.removeEventListener('touchstart', enableAudio);
+            document.removeEventListener('keydown', enableAudio);
+            document.removeEventListener('scroll', enableAudio);
+        }
+        
+        // Add event listeners for common user interactions
+        document.addEventListener('click', enableAudio);
+        document.addEventListener('touchstart', enableAudio);
+        document.addEventListener('keydown', enableAudio);
+        document.addEventListener('scroll', enableAudio);
+    </script>
+    
+    <script src="script.js"></script>
+</body>
+</html>
