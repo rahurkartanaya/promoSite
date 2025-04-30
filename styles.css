@@ -157,6 +157,7 @@ section {
     background-size: cover;
     background-position: center;
     position: relative;
+    padding-top: 40px; /* Added padding to move content down */
 }
 
 .glitch-text {
@@ -169,6 +170,7 @@ section {
         0.05em 0 0 var(--accent-pink),
         -0.05em -0.025em 0 var(--accent-blue);
     animation: float 4s ease-in-out infinite;
+    margin-top: 30px; /* Added margin to move the title down */
 }
 
 @keyframes float {
