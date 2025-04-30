@@ -1,7 +1,6 @@
 // Wait for the DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
     // Audio elements
-    const heroAudio = document.getElementById('hero-audio');
     const galleryAudio = document.getElementById('gallery-audio');
     const backgroundMusic = document.getElementById('background-music');
     
@@ -19,15 +18,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Array of section audio pairs for easier management
     const sectionAudios = [
-        { section: document.getElementById('hero'), audio: heroAudio },
         { section: document.getElementById('gallery'), audio: galleryAudio }
     ];
     
-    // Background music that plays throughout the page
+    // Background music reference (only used on social media page)
     let globalBackgroundMusic = null;
     if (backgroundMusic) {
         globalBackgroundMusic = backgroundMusic;
-        // Start playing the background music
+        // Start playing the background music on social media page
         globalBackgroundMusic.volume = 0.3; // Lower volume for background music
         globalBackgroundMusic.play().catch(e => console.log("Background music play prevented:", e));
     }
@@ -87,43 +85,32 @@ document.addEventListener('DOMContentLoaded', function() {
             // Skip if section or audio is null/undefined
             if (!section || !audio) return;
             
-            // Special handling for gallery audio - only control hero audio automatically
-            if (audio === galleryAudio) {
-                return; // Skip automatic control for gallery audio
-            }
-            
             if (isInViewport(section)) {
-                // If this section is in view, force play its audio
-                // Apply current mute state before playing
-                audio.muted = isMuted;
-                
-                // Force play with retry mechanism
-                const playPromise = audio.play();
-                
-                if (playPromise !== undefined) {
-                    playPromise.catch(e => {
-                        console.log("Audio play prevented, retrying:", e);
-                        
-                        // Try again with user interaction simulation
-                        document.addEventListener('click', function playAudioOnce() {
-                            audio.play().catch(e => console.log("Retry failed:", e));
-                            document.removeEventListener('click', playAudioOnce);
-                        }, { once: true });
-                        
-                        // Also try after a short delay
-                        setTimeout(() => {
-                            audio.play().catch(e => console.log("Delayed retry failed:", e));
-                        }, 1000);
-                    });
-                }
-                
-                // Pause other sections' audio (except gallery which is manually controlled)
-                sectionAudios.forEach(other => {
-                    if (other.section && other.audio && other.audio !== galleryAudio && 
-                        other.section !== section && !other.audio.paused) {
-                        other.audio.pause();
+                // Only play gallery audio when gallery section is in view
+                if (section.id === 'gallery' && audio === galleryAudio) {
+                    // Apply current mute state before playing
+                    audio.muted = isMuted;
+                    
+                    // Force play with retry mechanism
+                    const playPromise = audio.play();
+                    
+                    if (playPromise !== undefined) {
+                        playPromise.catch(e => {
+                            console.log("Gallery audio play prevented, retrying:", e);
+                            
+                            // Try again with user interaction simulation
+                            document.addEventListener('click', function playAudioOnce() {
+                                audio.play().catch(e => console.log("Gallery retry failed:", e));
+                                document.removeEventListener('click', playAudioOnce);
+                            }, { once: true });
+                            
+                            // Also try after a short delay
+                            setTimeout(() => {
+                                audio.play().catch(e => console.log("Delayed gallery retry failed:", e));
+                            }, 1000);
+                        });
                     }
-                });
+                }
             } else {
                 // If section is not in view, pause its audio
                 if (!audio.paused) {
@@ -158,31 +145,33 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
         handleSectionAudio();
         
-        // Try to play the first visible section's audio immediately
-        const firstVisibleSection = sectionAudios.find(({ section }) => isInViewport(section));
-        if (firstVisibleSection) {
-            firstVisibleSection.audio.muted = isMuted;
-            firstVisibleSection.audio.play().catch(e => console.log("Initial play prevented:", e));
+        // Only try to play gallery audio if gallery section is in view
+        const gallerySection = document.getElementById('gallery');
+        if (gallerySection && galleryAudio && isInViewport(gallerySection)) {
+            galleryAudio.muted = isMuted;
+            galleryAudio.play().catch(e => console.log("Initial gallery play prevented:", e));
             
             // Try again after a short delay
             setTimeout(() => {
-                firstVisibleSection.audio.play().catch(e => console.log("Delayed initial play prevented:", e));
+                galleryAudio.play().catch(e => console.log("Delayed initial gallery play prevented:", e));
             }, 500);
         }
     }, 1000);
     
     // Add a click event listener to the document to enable audio on first user interaction
     document.addEventListener('click', function enableAudioOnClick() {
-        const visibleSection = sectionAudios.find(({ section }) => section && isInViewport(section));
-        if (visibleSection && visibleSection.audio) {
-            visibleSection.audio.muted = isMuted;
-            visibleSection.audio.play().catch(e => console.log("Click play prevented:", e));
+        const gallerySection = document.getElementById('gallery');
+        
+        // Only play gallery audio if gallery section is in view
+        if (gallerySection && galleryAudio && isInViewport(gallerySection)) {
+            galleryAudio.muted = isMuted;
+            galleryAudio.play().catch(e => console.log("Gallery audio click play prevented:", e));
         }
         
-        // Also play the background music if it exists
+        // Also play the background music if it exists (for social media page)
         if (globalBackgroundMusic) {
             globalBackgroundMusic.muted = isMuted;
-            globalBackgroundMusic.play().catch(e => console.log("Background music play prevented:", e));
+            globalBackgroundMusic.play().catch(e => console.log("Background music click play prevented:", e));
         }
         
         document.removeEventListener('click', enableAudioOnClick);
