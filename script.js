@@ -2,9 +2,12 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Audio elements
     const heroAudio = document.getElementById('hero-audio');
-    const synopsisAudio = document.getElementById('synopsis-audio');
     const galleryAudio = document.getElementById('gallery-audio');
     const backgroundMusic = document.getElementById('background-music');
+    
+    // Gallery audio controls
+    const galleryAudioPlay = document.getElementById('gallery-audio-play');
+    const galleryAudioPause = document.getElementById('gallery-audio-pause');
     
     // Global audio control
     const audioToggle = document.getElementById('audio-toggle');
@@ -17,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Array of section audio pairs for easier management
     const sectionAudios = [
         { section: document.getElementById('hero'), audio: heroAudio },
-        { section: document.getElementById('synopsis'), audio: synopsisAudio },
         { section: document.getElementById('gallery'), audio: galleryAudio }
     ];
     
@@ -85,6 +87,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // Skip if section or audio is null/undefined
             if (!section || !audio) return;
             
+            // Special handling for gallery audio - only control hero audio automatically
+            if (audio === galleryAudio) {
+                return; // Skip automatic control for gallery audio
+            }
+            
             if (isInViewport(section)) {
                 // If this section is in view, force play its audio
                 // Apply current mute state before playing
@@ -110,9 +117,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                 }
                 
-                // Pause other sections' audio
+                // Pause other sections' audio (except gallery which is manually controlled)
                 sectionAudios.forEach(other => {
-                    if (other.section && other.audio && other.section !== section && !other.audio.paused) {
+                    if (other.section && other.audio && other.audio !== galleryAudio && 
+                        other.section !== section && !other.audio.paused) {
                         other.audio.pause();
                     }
                 });
@@ -121,6 +129,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!audio.paused) {
                     audio.pause();
                 }
+            }
+        });
+    }
+    
+    // Gallery audio play/pause controls
+    if (galleryAudioPlay) {
+        galleryAudioPlay.addEventListener('click', function() {
+            if (galleryAudio) {
+                galleryAudio.muted = isMuted;
+                galleryAudio.play().catch(e => console.log("Gallery audio play failed:", e));
+            }
+        });
+    }
+    
+    if (galleryAudioPause) {
+        galleryAudioPause.addEventListener('click', function() {
+            if (galleryAudio && !galleryAudio.paused) {
+                galleryAudio.pause();
             }
         });
     }

@@ -23,6 +23,9 @@
         <div class="container">
             <h1 class="glitch-text" data-text="US">US</h1>
             <p class="tagline">We are our own worst enemy</p>
+            <div class="trailer-container">
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/1jtXob2vaIc?si=wjoWtVxIJsKv0V6W" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
             <div class="scroll-indicator">
                 <span>Scroll Down</span>
                 <div class="arrow"></div>
@@ -32,12 +35,6 @@
 
     <!-- Synopsis Section -->
     <section id="synopsis">
-        <div class="audio-container">
-            <audio id="synopsis-audio" autoplay loop preload="auto">
-                <source src="Audios/audio 2.mp3" type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>
-        </div>
         <div class="container">
             <h2>THE STORY</h2>
             <div class="synopsis-content">
@@ -55,10 +52,18 @@
     <!-- Visual Gallery -->
     <section id="gallery">
         <div class="audio-container">
-            <audio id="gallery-audio" autoplay loop preload="auto">
+            <audio id="gallery-audio" loop preload="auto">
                 <source src="Audios/audio 3.mp3" type="audio/mpeg">
                 Your browser does not support the audio element.
             </audio>
+            <div class="gallery-audio-controls">
+                <button id="gallery-audio-play" class="audio-control-btn">
+                    <span class="audio-control-icon">▶️</span>
+                </button>
+                <button id="gallery-audio-pause" class="audio-control-btn">
+                    <span class="audio-control-icon">⏸️</span>
+                </button>
+            </div>
         </div>
         <div class="container">
             <h2>IMAGES</h2>
